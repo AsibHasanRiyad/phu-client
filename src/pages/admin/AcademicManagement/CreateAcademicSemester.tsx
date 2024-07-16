@@ -2,43 +2,56 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHForm from "../../../components/form/PHForm";
 import { Button, Col, Flex } from "antd";
 import PHSelect from "../../../components/form/PHSelect";
-const nameOptions = [
-  { value: "01", label: "Autumn" },
-  { value: "02", label: "Summer" },
-  { value: "03", label: "Fall" },
-];
+import { nameOptions } from "../../../constants/semester";
+import { monthOptions } from "../../../constants/global";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { academicSemesterSchema } from "../../../schemas/academicManagement.schema";
+import { useAddAcademicSemesterMutation } from "../../../redux/features/admin/academicManagement.api";
+import { toast } from "sonner";
 
 const currentYear = new Date().getFullYear();
+
 const yearOptions = [0, 1, 2, 3, 4].map((num) => ({
   value: String(currentYear + num),
   label: String(currentYear + num),
 }));
-console.log(yearOptions);
 
 const CreateAcademicSemester = () => {
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const [addAcademicSemester] = useAddAcademicSemesterMutation();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const name = nameOptions[Number(data?.name - 1)]?.label;
     const semesterData = {
       name,
       code: nameOptions[Number(data?.name) - 1]?.value,
       year: data?.year,
+      startMonth: data?.startMonth,
+      endMonth: data?.endMonth,
     };
-    console.log(semesterData);
+    try {
+      console.log(semesterData);
+      const res = await addAcademicSemester(semesterData);
+      console.log(res);
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
 
   return (
     <Flex justify="center">
       <Col span={6}>
-        <PHForm onSubmit={onSubmit}>
+        <PHForm
+          resolver={zodResolver(academicSemesterSchema)}
+          onSubmit={onSubmit}
+        >
           <PHSelect options={nameOptions} name={"name"} label={"Name"} />
           <PHSelect options={yearOptions} name={"year"} label={"Year"} />
           <PHSelect
-            options={nameOptions}
+            options={monthOptions}
             name={"startMonth"}
             label={"Start Month"}
           />
           <PHSelect
-            options={nameOptions}
+            options={monthOptions}
             name={"endMonth"}
             label={"End Month"}
           />

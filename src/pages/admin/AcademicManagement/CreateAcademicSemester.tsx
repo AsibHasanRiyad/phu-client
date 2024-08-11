@@ -19,6 +19,7 @@ const yearOptions = [0, 1, 2, 3, 4].map((num) => ({
 const CreateAcademicSemester = () => {
   const [addAcademicSemester] = useAddAcademicSemesterMutation();
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const toastId = toast.loading("Creating.....");
     const name = nameOptions[Number(data?.name - 1)]?.label;
     const semesterData = {
       name,
@@ -29,10 +30,16 @@ const CreateAcademicSemester = () => {
     };
     try {
       console.log(semesterData);
-      const res = await addAcademicSemester(semesterData);
+      const res = await addAcademicSemester(semesterData).unwrap();
       console.log(res);
+      if (res.error) {
+        toast.error(res?.error?.data.message, { id: toastId });
+      } else {
+        toast.success(res.data.message, { id: toastId });
+      }
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.dismiss(toastId);
+      toast.error("Something went wrong", { id: toastId });
     }
   };
 

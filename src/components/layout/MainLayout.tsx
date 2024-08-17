@@ -13,13 +13,13 @@ const MainLayout = () => {
     dispatch(logout());
   };
   return (
-    <Layout style={{ height: "100vh" }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
         <Header>
           <Button onClick={handelLogout}>Logout</Button>
         </Header>
-        <Content style={{ margin: "24px 16px 0" }}>
+        <Content style={{ margin: "40px 40px 0" }}>
           <div>
             <Outlet />
           </div>

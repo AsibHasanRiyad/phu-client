@@ -1,26 +1,52 @@
-import { Button, Space, Table, TableColumnsType, TableProps } from "antd";
+import {
+  Button,
+  Modal,
+  Pagination,
+  Space,
+  Table,
+  TableColumnsType,
+  TableProps,
+} from "antd";
 import { useState } from "react";
 import { TQueryParams } from "../../../constants/global";
-import { useGetAllStudentsQuery } from "../../../redux/features/admin/userManagement.api";
+import {
+  useGetAllStudentsQuery,
+  useUpdateUserMutation,
+} from "../../../redux/features/admin/userManagement.api";
 import { TStudent } from "../../../types";
-export type TTableData = Pick<TStudent, "name" | "id">;
+import { Link } from "react-router-dom";
+export type TTableData = Pick<
+  TStudent,
+  "fullName" | "id" | "email" | "contactNo"
+>;
 const StudentData = () => {
+  const [targetUser, setTargetUser] = useState<string | undefined>();
+  const [newStatus, setNewStatus] = useState("");
   const [params, setParams] = useState<TQueryParams[]>([]);
   const [page, setPage] = useState(1);
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
-  const { data: studentData, isFetching } = useGetAllStudentsQuery([
-    { name: "limit", value: 3 },
+  const {
+    data: studentData,
+    isFetching,
+    refetch,
+  } = useGetAllStudentsQuery([
+    { name: "limit", value: 10 },
     { name: "page", value: page },
     { name: "sort", value: "id" },
     ...params,
   ]);
-  console.log(params);
-
-  const tableData = studentData?.data?.map(({ _id, fullName, id }) => ({
-    key: _id,
-    fullName,
-    id,
-  }));
+  const metaData = studentData?.meta;
+  const tableData = studentData?.data?.map(
+    ({ _id, fullName, id, email, contactNo, user }) => ({
+      key: _id,
+      fullName,
+      id,
+      email,
+      contactNo,
+      user,
+    })
+  );
   const columns: TableColumnsType<TTableData> = [
     {
       title: "Name",
@@ -33,17 +59,79 @@ const StudentData = () => {
       dataIndex: "id",
     },
     {
+      title: "Email",
+      key: "email",
+      dataIndex: "email",
+    },
+    {
+      title: "Contact Number",
+      key: "contactNo",
+      dataIndex: "contactNo",
+    },
+    {
       title: "Action",
-      render: () => (
+      render: (item) => (
         <Space>
-          <Button>Update</Button>
-          <Button>Details</Button>
-          <Button>Block</Button>
+          <Link to={`/admin/student-data/${item?.key}`}>
+            <Button>Details</Button>
+          </Link>
+
+          <Link to={`/admin/update-student/${item?.key}`}>
+            {" "}
+            <Button>Update</Button>
+          </Link>
+          {item?.user?.status === "in-progress" ? (
+            <Button
+              onClick={() => {
+                showModal(item?.user?._id, "blocked");
+              }}
+            >
+              Block
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                showModal(item?.user?._id, "in-progress");
+              }}
+            >
+              Unblock
+            </Button>
+          )}
         </Space>
       ),
       width: "10%",
     },
   ];
+
+  // modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = (id: string, status: string) => {
+    setTargetUser(id);
+    setNewStatus(status);
+    setIsModalOpen(true);
+  };
+
+  const handleOk = async () => {
+    if (targetUser) {
+      try {
+        const result = await updateUser({
+          id: targetUser,
+          status: newStatus,
+        }).unwrap();
+        if (result?.success === true) {
+          refetch();
+          setIsModalOpen(false);
+        }
+      } catch (error) {
+        console.error("Failed to update student:", error);
+      }
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const onChange: TableProps<TTableData>["onChange"] = (
     filters,
 
@@ -65,11 +153,29 @@ const StudentData = () => {
   return (
     <div>
       <Table
-        loading={isFetching}
+        loading={isFetching || isUpdating}
         columns={columns}
         dataSource={tableData}
         onChange={onChange}
+        pagination={false}
       />
+      <Pagination
+        onChange={(value) => setPage(value)}
+        total={metaData?.total}
+        pageSize={metaData?.limit}
+        current={page}
+      />
+      <Modal
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        title={"Are you sure you want to block this user?"}
+        okText={"Yes"}
+      >
+        <p style={{ fontSize: "16px", color: "#666" }}>
+          You can unblock this user later if you change your mind.
+        </p>
+      </Modal>
     </div>
   );
 };

@@ -27,15 +27,50 @@ const userManagementApi = baseApi.injectEndpoints({
       },
     }),
 
+    getSingleStudent: builder.query({
+      query: (args) => {
+        return {
+          url: `/students/${args}`,
+          method: "GET",
+        };
+      },
+    }),
+
     addStudent: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/users/create-student",
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    updateUser: builder.mutation({
       query: (data) => ({
-        url: "/users/create-student",
+        url: `/users/change-status/${data?.studentData?.id}`,
         method: "POST",
-        body: data,
+        body: data.studentData.student,
       }),
+    }),
+    updateStudent: builder.mutation({
+      query: (args) => {
+        const { data, studentId } = args;
+        console.log(data, studentId, "inside redux");
+
+        return {
+          url: `/students/${studentId}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
     }),
   }),
 });
 
-export const { useAddStudentMutation, useGetAllStudentsQuery } =
-  userManagementApi;
+export const {
+  useAddStudentMutation,
+  useGetAllStudentsQuery,
+  useGetSingleStudentQuery,
+  useUpdateUserMutation,
+  useUpdateStudentMutation,
+} = userManagementApi;

@@ -46,11 +46,14 @@ const userManagementApi = baseApi.injectEndpoints({
       },
     }),
     updateUser: builder.mutation({
-      query: (data) => ({
-        url: `/users/change-status/${data?.studentData?.id}`,
-        method: "POST",
-        body: data.studentData.student,
-      }),
+      query: (data) => {
+        const { id, status } = data;
+        return {
+          url: `/users/change-status/${id}`,
+          method: "POST",
+          body: { status },
+        };
+      },
     }),
     updateStudent: builder.mutation({
       query: (args) => {

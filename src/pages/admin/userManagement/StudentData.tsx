@@ -113,6 +113,7 @@ const StudentData = () => {
   };
 
   const handleOk = async () => {
+    console.log(targetUser);
     if (targetUser) {
       try {
         const result = await updateUser({

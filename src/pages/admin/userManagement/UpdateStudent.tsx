@@ -19,6 +19,7 @@ const UpdateStudent = () => {
   const { studentId } = useParams();
   const [updateStudent] = useUpdateStudentMutation();
   const { data: oldData } = useGetSingleStudentQuery(studentId);
+  console.log(oldData);
 
   const { data: sData, isLoading: sIsLoading } =
     useGetAllSemestersQuery(undefined);
@@ -40,10 +41,10 @@ const UpdateStudent = () => {
       student: data,
     };
 
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(studentData));
-    formData.append("file", data.image);
-    updateStudent({ data: formData, studentId: oldData?.data?.id })
+    // const formData = new FormData();
+    // formData.append("data", JSON.stringify(studentData));
+    // formData.append("file", data.image);
+    updateStudent({ data: studentData, studentId: studentId })
       .unwrap()
       .then((response) => {
         console.log("Update successful:", response);
@@ -55,7 +56,7 @@ const UpdateStudent = () => {
   return (
     <Row style={{ marginBottom: "20px" }}>
       <Col span={24}>
-        <PHForm onSubmit={onSubmit} defaultValues={oldData}>
+        <PHForm onSubmit={onSubmit} defaultValues={oldData?.data}>
           <Divider>Personal Info</Divider>
           <Row gutter={10}>
             <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>

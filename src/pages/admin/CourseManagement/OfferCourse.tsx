@@ -10,16 +10,26 @@ import PHSelectWithWatch from "../../../components/form/PHSelectWithWatch";
 import { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHSelect from "../../../components/form/PHSelect";
-import { useGetAllSemesterRegistrationQuery } from "../../../redux/features/admin/courseManagement";
+import {
+  useGetAllCoursesQuery,
+  useGetAllSemesterRegistrationQuery,
+  useGetCourseFacultiesQuery,
+} from "../../../redux/features/admin/courseManagement";
 export const OfferCourse = () => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
   const [id, setId] = useState("");
+  const [courseId, setCourseId] = useState("");
   const { data: academicFacultyData } = useGetAcademicFacultiesQuery(undefined);
   const { data: academicDepartment } =
     useGetAcademicDepartmentsQuery(undefined);
   const { data: semesterRegistrationData } =
     useGetAllSemesterRegistrationQuery(undefined);
-  console.log(semesterRegistrationData);
+  const { data: courseData } = useGetAllCoursesQuery(undefined);
+  const { data: courseFacultiesData } = useGetCourseFacultiesQuery({
+    courseId,
+  });
+  console.log(courseFacultiesData, "faculty of course");
+
   const academicFacultiesOption = academicFacultyData?.data?.map((item) => ({
     value: item._id,
     label: item.name,
@@ -30,13 +40,17 @@ export const OfferCourse = () => {
   }));
   const semesterRegistrationOptions = semesterRegistrationData?.data?.map(
     (item) => {
-      console.log(item.academicSemester.name);
       return {
         value: item._id,
         label: `${item?.academicSemester?.name} ${item?.academicSemester?.year}`,
       };
     }
   );
+  console.log(courseId, "Course id");
+  const courseOptions = courseData?.data?.map((item) => ({
+    value: item._id,
+    label: item.title,
+  }));
   const daysOption = days?.map((item) => ({
     value: item,
     label: item,
@@ -63,6 +77,12 @@ export const OfferCourse = () => {
             name="semesterRegistration"
             label="Semester Registration"
             options={semesterRegistrationOptions}
+          />
+          <PHSelect
+            name="Course"
+            label="Course"
+            options={courseOptions}
+            onValueChange={setCourseId}
           />
           <PHInput disabled={!id} type="text" label="Test" name="text" />
           <PHInput type="number" label="Section" name="section" />

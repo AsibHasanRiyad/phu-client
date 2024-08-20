@@ -10,6 +10,7 @@ import {
   useGetAllSemestersQuery,
 } from "../../../redux/features/admin/academicManagement.api";
 import { useAddStudentMutation } from "../../../redux/features/admin/userManagement.api";
+import { toast } from "sonner";
 
 const studentDefaultValues = {
   name: {
@@ -17,7 +18,7 @@ const studentDefaultValues = {
     middleName: "Student",
     lastName: "Number 1",
   },
-  gender: "male",
+  gender: "Male",
   email: "student2@gmail.com",
   contactNo: "1235678",
   emergencyContactNo: "987-654-3210",
@@ -58,7 +59,8 @@ const CreateStudent = () => {
     value: item._id,
     label: `${item.name} `,
   }));
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const toastId = toast.loading("Creating.....");
     const studentData = {
       password: "student12345",
       student: data,
@@ -66,8 +68,17 @@ const CreateStudent = () => {
     const formData = new FormData();
     formData.append("data", JSON.stringify(studentData));
     formData.append("file", data.image);
-    // console.log(data);
-    addStudent(formData);
+    try {
+      const res = await addStudent(formData).unwrap();
+      if (res.error) {
+        toast.error(res?.error?.data.message, { id: toastId });
+      } else {
+        toast.success(res?.message, { id: toastId });
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error("Something went wrong", { id: toastId });
+    }
 
     // just for checking
     // console.log(Object.fromEntries(formData));

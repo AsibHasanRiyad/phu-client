@@ -13,7 +13,7 @@ export const monthNames = [
   "December",
 ];
 
-export const gender = ["Male", "Female", "Others"];
+export const gender = ["Male", "Female", "Other"];
 
 export const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 

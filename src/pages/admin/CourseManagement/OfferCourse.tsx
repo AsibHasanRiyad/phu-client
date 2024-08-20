@@ -1,20 +1,42 @@
 import { Button, Col, Flex } from "antd";
 import PHForm from "../../../components/form/PHForm";
 
-import { useGetAcademicFacultiesQuery } from "../../../redux/features/admin/academicManagement.api";
+import {
+  useGetAcademicDepartmentsQuery,
+  useGetAcademicFacultiesQuery,
+} from "../../../redux/features/admin/academicManagement.api";
 import PHInput from "../../../components/form/PHInput";
 import PHSelectWithWatch from "../../../components/form/PHSelectWithWatch";
 import { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHSelect from "../../../components/form/PHSelect";
+import { useGetAllSemesterRegistrationQuery } from "../../../redux/features/admin/courseManagement";
 export const OfferCourse = () => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
   const [id, setId] = useState("");
   const { data: academicFacultyData } = useGetAcademicFacultiesQuery(undefined);
+  const { data: academicDepartment } =
+    useGetAcademicDepartmentsQuery(undefined);
+  const { data: semesterRegistrationData } =
+    useGetAllSemesterRegistrationQuery(undefined);
+  console.log(semesterRegistrationData);
   const academicFacultiesOption = academicFacultyData?.data?.map((item) => ({
     value: item._id,
     label: item.name,
   }));
+  const academicDepartmentOptions = academicDepartment?.data?.map((item) => ({
+    value: item._id,
+    label: item.name,
+  }));
+  const semesterRegistrationOptions = semesterRegistrationData?.data?.map(
+    (item) => {
+      console.log(item.academicSemester.name);
+      return {
+        value: item._id,
+        label: `${item?.academicSemester?.name} ${item?.academicSemester?.year}`,
+      };
+    }
+  );
   const daysOption = days?.map((item) => ({
     value: item,
     label: item,
@@ -29,8 +51,18 @@ export const OfferCourse = () => {
           <PHSelectWithWatch
             onValueChange={setId}
             options={academicFacultiesOption}
-            name={"academicSemester"}
-            label={"Academic Semester"}
+            name={"academicFaculties"}
+            label={"Academic Faculty"}
+          />
+          <PHSelect
+            name="academicDepartment"
+            label="Academic Department"
+            options={academicDepartmentOptions}
+          />
+          <PHSelect
+            name="semesterRegistration"
+            label="Semester Registration"
+            options={semesterRegistrationOptions}
           />
           <PHInput disabled={!id} type="text" label="Test" name="text" />
           <PHInput type="number" label="Section" name="section" />

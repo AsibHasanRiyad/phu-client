@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TQueryParams } from "../../../constants/global";
 import { TResponseRedux, TSemester } from "../../../types";
 import { baseApi } from "../../api/baseApi";
@@ -83,6 +84,30 @@ const courseManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["courses"],
     }),
+    getAllSemesterRegistration: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParams) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/semester-registrations",
+          method: "GET",
+          params: params,
+        };
+      },
+
+      transformResponse: (response: TResponseRedux<any>) => {
+        return {
+          data: response.data,
+          meta: response.meta,
+        };
+      },
+    }),
   }),
 });
 
@@ -93,4 +118,5 @@ export const {
   useGetAllCoursesQuery,
   useAddCourseMutation,
   useAddFacultiesMutation,
+  useGetAllSemesterRegistrationQuery,
 } = courseManagementApi;

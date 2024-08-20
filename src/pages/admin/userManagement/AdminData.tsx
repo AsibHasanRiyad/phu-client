@@ -72,10 +72,10 @@ const AdminData = () => {
     {
       title: "Action",
       render: (item) => {
-        console.log(item.user);
+        // console.log(item.user);
         return (
           <Space>
-            <Link to={`/admin/student-data/${item?.key}`}>
+            <Link to={`/admin/admin-data/${item?.key}`}>
               <Button>Details</Button>
             </Link>
 

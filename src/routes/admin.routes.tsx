@@ -5,7 +5,8 @@ import CreateAcademicDepartment from "../pages/admin/AcademicManagement/CreateAc
 import CreateAcademicFaculty from "../pages/admin/AcademicManagement/CreateAcademicFaculty";
 import CreateAcademicSemester from "../pages/admin/AcademicManagement/CreateAcademicSemester";
 import AdminDashboard from "../pages/admin/AdminDashboard";
-import { Courses } from "../pages/admin/CourseManagement/Courses";
+import Courses from "../pages/admin/CourseManagement/Courses";
+
 import CreateCourse from "../pages/admin/CourseManagement/CreateCourse";
 
 import { OfferCourse } from "../pages/admin/CourseManagement/OfferCourse";
@@ -13,10 +14,13 @@ import { OfferedCourse } from "../pages/admin/CourseManagement/OfferedCourse";
 import RegisteredSemester from "../pages/admin/CourseManagement/RegisteredSemester";
 import SemesterRegistration from "../pages/admin/CourseManagement/SemesterRegistration";
 import AdminData from "../pages/admin/userManagement/AdminData";
+import AdminDetails from "../pages/admin/userManagement/AdminDetails";
+
 import CreateAdmin from "../pages/admin/userManagement/CreateAdmin";
 import CreateFaculty from "../pages/admin/userManagement/CreateFaculty";
 import CreateStudent from "../pages/admin/userManagement/CreateStudent";
 import FacultyData from "../pages/admin/userManagement/FacultyData";
+import { FacultyDetails } from "../pages/admin/userManagement/FacultyDetails";
 import StudentData from "../pages/admin/userManagement/StudentData";
 import StudentDetails from "../pages/admin/userManagement/StudentDetails";
 import UpdateStudent from "../pages/admin/userManagement/UpdateStudent";
@@ -94,6 +98,10 @@ export const adminPaths = [
         element: <AdminData />,
       },
       {
+        path: "admin-data/:adminId",
+        element: <AdminDetails />,
+      },
+      {
         name: "Create Faculty",
         path: "create-faculty",
         element: <CreateFaculty />,
@@ -102,6 +110,10 @@ export const adminPaths = [
         name: " Faculty",
         path: "faculty-data",
         element: <FacultyData />,
+      },
+      {
+        path: "faculty-data/:facultyId",
+        element: <FacultyDetails />,
       },
     ],
   },

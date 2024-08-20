@@ -74,7 +74,7 @@ const FacultyData = () => {
         console.log(item.user);
         return (
           <Space>
-            <Link to={`/admin/student-data/${item?.key}`}>
+            <Link to={`/admin/faculty-data/${item?.key}`}>
               <Button>Details</Button>
             </Link>
 

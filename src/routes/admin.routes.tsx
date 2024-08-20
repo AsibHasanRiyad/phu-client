@@ -12,9 +12,11 @@ import { OfferCourse } from "../pages/admin/CourseManagement/OfferCourse";
 import { OfferedCourse } from "../pages/admin/CourseManagement/OfferedCourse";
 import RegisteredSemester from "../pages/admin/CourseManagement/RegisteredSemester";
 import SemesterRegistration from "../pages/admin/CourseManagement/SemesterRegistration";
+import AdminData from "../pages/admin/userManagement/AdminData";
 import CreateAdmin from "../pages/admin/userManagement/CreateAdmin";
 import CreateFaculty from "../pages/admin/userManagement/CreateFaculty";
 import CreateStudent from "../pages/admin/userManagement/CreateStudent";
+import FacultyData from "../pages/admin/userManagement/FacultyData";
 import StudentData from "../pages/admin/userManagement/StudentData";
 import StudentDetails from "../pages/admin/userManagement/StudentDetails";
 import UpdateStudent from "../pages/admin/userManagement/UpdateStudent";
@@ -87,9 +89,19 @@ export const adminPaths = [
         element: <CreateAdmin />,
       },
       {
+        name: " Admin",
+        path: "admin-data",
+        element: <AdminData />,
+      },
+      {
         name: "Create Faculty",
         path: "create-faculty",
         element: <CreateFaculty />,
+      },
+      {
+        name: " Faculty",
+        path: "faculty-data",
+        element: <FacultyData />,
       },
     ],
   },

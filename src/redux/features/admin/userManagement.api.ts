@@ -1,4 +1,4 @@
-import { TStudent } from "../../../types";
+import { TAdmin, TFaculty, TStudent } from "../../../types";
 import { TResponseRedux } from "../../../types/global";
 import { baseApi } from "../../api/baseApi";
 
@@ -54,12 +54,56 @@ const userManagementApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getAllFaculty: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        // Assuming args is an array of { name: string; value: any } objects
+        args.forEach(({ name, value }) => {
+          params.append(name, value.toString());
+        });
+
+        return {
+          url: "/faculties",
+          method: "GET",
+          params: params, // Now this contains the actual query parameters
+        };
+      },
+      transformResponse: (response: TResponseRedux<TFaculty[]>) => {
+        return {
+          data: response.data,
+          meta: response.meta,
+        };
+      },
+    }),
     addAdmin: builder.mutation({
       query: (data) => {
         return {
           url: "/users/create-admin",
           method: "POST",
           body: data,
+        };
+      },
+    }),
+    getAllAdmin: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        // Assuming args is an array of { name: string; value: any } objects
+        args.forEach(({ name, value }) => {
+          params.append(name, value.toString());
+        });
+
+        return {
+          url: "/admins",
+          method: "GET",
+          params: params, // Now this contains the actual query parameters
+        };
+      },
+      transformResponse: (response: TResponseRedux<TAdmin[]>) => {
+        return {
+          data: response.data,
+          meta: response.meta,
         };
       },
     }),
@@ -96,4 +140,6 @@ export const {
   useUpdateStudentMutation,
   useAddFacultyMutation,
   useAddAdminMutation,
+  useGetAllFacultyQuery,
+  useGetAllAdminQuery,
 } = userManagementApi;

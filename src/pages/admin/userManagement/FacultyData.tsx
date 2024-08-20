@@ -10,16 +10,16 @@ import {
 import { useState } from "react";
 import { TQueryParams } from "../../../constants/global";
 import {
-  useGetAllStudentsQuery,
+  useGetAllFacultyQuery,
   useUpdateUserMutation,
 } from "../../../redux/features/admin/userManagement.api";
 import { TStudent } from "../../../types";
 import { Link } from "react-router-dom";
 export type TTableData = Pick<
   TStudent,
-  "fullName" | "id" | "email" | "contactNo"
+  "fullName" | "id" | "email" | "contactNo" | "user"
 >;
-const StudentData = () => {
+const FacultyData = () => {
   const [targetUser, setTargetUser] = useState<string | undefined>();
   const [newStatus, setNewStatus] = useState("");
   const [params, setParams] = useState<TQueryParams[]>([]);
@@ -27,17 +27,17 @@ const StudentData = () => {
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const {
-    data: studentData,
+    data: facultyData,
     isFetching,
     refetch,
-  } = useGetAllStudentsQuery([
+  } = useGetAllFacultyQuery([
     { name: "limit", value: 10 },
     { name: "page", value: page },
     { name: "sort", value: "id" },
     ...params,
   ]);
-  const metaData = studentData?.meta;
-  const tableData = studentData?.data?.map(
+  const metaData = facultyData?.meta;
+  const tableData = facultyData?.data?.map(
     ({ _id, fullName, id, email, contactNo, user }) => ({
       key: _id,
       fullName,
@@ -71,6 +71,7 @@ const StudentData = () => {
     {
       title: "Action",
       render: (item) => {
+        console.log(item.user);
         return (
           <Space>
             <Link to={`/admin/student-data/${item?.key}`}>
@@ -183,4 +184,4 @@ const StudentData = () => {
   );
 };
 
-export default StudentData;
+export default FacultyData;

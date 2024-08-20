@@ -52,3 +52,38 @@ export interface LocalGuardian {
   contactNo: string;
   address: string;
 }
+
+export interface TFaculty {
+  designation: string;
+  id: string;
+  _id: string;
+  name: Name;
+  gender: string;
+  email: string;
+  dateOfBirth: string;
+  contactNo: string;
+  user: TUser;
+  emergencyContactNo: string;
+  bloogGroup: string;
+  presentAddress: string;
+  permanentAddress: string;
+  academicDepartment: string;
+  fullName: string;
+}
+
+export interface TAdmin {
+  designation: string;
+  id: string;
+  _id: string;
+  name: Name;
+  fullName: string;
+  gender: string;
+  user: TUser;
+  dateOfBirth: string;
+  email: string;
+  contactNo: string;
+  emergencyContactNo: string;
+  bloogGroup: string;
+  presentAddress: string;
+  permanentAddress: string;
+}

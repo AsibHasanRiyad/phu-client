@@ -6,7 +6,7 @@ type TPHSelectProps = {
   name: string;
   disabled?: boolean;
   mode?: "multiple" | undefined;
-  onValueChange?: string;
+  onValueChange?: (value: string) => void; // Updated type
   options:
     | {
         value: string;
@@ -28,7 +28,11 @@ const PHSelect = ({
     <Controller
       name={name}
       render={({ field, fieldState: { error } }) => (
-        <Form.Item label={label}>
+        <Form.Item
+          label={label}
+          validateStatus={error ? "error" : ""}
+          help={error?.message}
+        >
           <Select
             mode={mode}
             size="middle"
@@ -36,11 +40,18 @@ const PHSelect = ({
             style={{ width: "100%" }}
             options={options}
             disabled={disabled}
-            onChange={onValueChange}
+            onChange={(value) => {
+              field.onChange(value);
+              if (onValueChange) {
+                onValueChange(value);
+              }
+            }}
+            onBlur={field.onBlur}
+            value={field.value}
           />
-          {error && <small style={{ color: "red" }}>{error.message}</small>}
         </Form.Item>
       )}
+      defaultValue=""
     />
   );
 };

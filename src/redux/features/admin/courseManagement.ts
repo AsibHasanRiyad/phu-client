@@ -80,6 +80,7 @@ const courseManagementApi = baseApi.injectEndpoints({
       query: (args) => {
         const params = new URLSearchParams();
         const { courseId, ...otherParams } = args;
+        console.log(args);
         if (args) {
           Object.keys(otherParams).forEach((key) => {
             params.append(key, otherParams[key]);
@@ -132,6 +133,16 @@ const courseManagementApi = baseApi.injectEndpoints({
         };
       },
     }),
+    addOfferedCourse: builder.mutation({
+      query: (args) => {
+        console.log(args, "argssssss.................");
+        return {
+          url: "/offered-courses/create-offered-course",
+          method: "POST",
+          body: args,
+        };
+      },
+    }),
   }),
 });
 
@@ -144,4 +155,5 @@ export const {
   useAddFacultiesMutation,
   useGetAllSemesterRegistrationQuery,
   useGetCourseFacultiesQuery,
+  useAddOfferedCourseMutation,
 } = courseManagementApi;

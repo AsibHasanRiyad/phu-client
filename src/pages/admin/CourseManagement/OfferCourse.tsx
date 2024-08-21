@@ -11,13 +11,16 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHSelect from "../../../components/form/PHSelect";
 import {
+  useAddOfferedCourseMutation,
   useGetAllCoursesQuery,
   useGetAllSemesterRegistrationQuery,
   useGetCourseFacultiesQuery,
 } from "../../../redux/features/admin/courseManagement";
+import { toast } from "sonner";
+import PHTimePicker from "../../../components/form/PHTimePicker";
+import moment from "moment";
 export const OfferCourse = () => {
   const days = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-  const [id, setId] = useState("");
   const [courseId, setCourseId] = useState("");
   const { data: academicFacultyData } = useGetAcademicFacultiesQuery(undefined);
   const { data: academicDepartment } =
@@ -27,8 +30,9 @@ export const OfferCourse = () => {
   const { data: courseData } = useGetAllCoursesQuery(undefined);
   const { data: courseFacultiesData } = useGetCourseFacultiesQuery({
     courseId,
+    skip: !courseId,
   });
-  console.log(courseFacultiesData, "faculty of course");
+  const [addOfferedCourse] = useAddOfferedCourseMutation();
 
   const academicFacultiesOption = academicFacultyData?.data?.map((item) => ({
     value: item._id,
@@ -46,7 +50,15 @@ export const OfferCourse = () => {
       };
     }
   );
-  console.log(courseId, "Course id");
+  const courseFacultiesDataOptions = courseFacultiesData?.data?.faculties?.map(
+    (item) => {
+      return {
+        value: item._id,
+        label: item.fullName,
+      };
+    }
+  );
+  // console.log(courseId, "Course id");
   const courseOptions = courseData?.data?.map((item) => ({
     value: item._id,
     label: item.title,
@@ -55,17 +67,39 @@ export const OfferCourse = () => {
     value: item,
     label: item,
   }));
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const formattedStartTime = moment(data.startTime).format("HH:mm");
+    const formattedEndTime = moment(data.endTime).format("HH:mm");
+    const offerCourseData = {
+      ...data,
+      section: Number(data.section),
+      maxCapacity: Number(data.maxCapacity),
+      startTime: formattedStartTime,
+      endTime: formattedEndTime,
+    };
+    console.log(offerCourseData);
+    const toastId = toast.loading("Creating.....");
+
+    try {
+      const res = await addOfferedCourse(offerCourseData).unwrap();
+      console.log(res);
+      if (res.error) {
+        toast.error(res?.error?.data.message, { id: toastId });
+      } else {
+        toast.success(res?.data?.message, { id: toastId });
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error("Something went wrong", { id: toastId });
+    }
   };
   return (
     <Flex justify="center">
       <Col span={6}>
         <PHForm onSubmit={onSubmit}>
-          <PHSelectWithWatch
-            onValueChange={setId}
+          <PHSelect
             options={academicFacultiesOption}
-            name={"academicFaculties"}
+            name={"academicFaculty"}
             label={"Academic Faculty"}
           />
           <PHSelect
@@ -78,13 +112,18 @@ export const OfferCourse = () => {
             label="Semester Registration"
             options={semesterRegistrationOptions}
           />
-          <PHSelect
-            name="Course"
+          <PHSelectWithWatch
+            name="course"
             label="Course"
             options={courseOptions}
             onValueChange={setCourseId}
           />
-          <PHInput disabled={!id} type="text" label="Test" name="text" />
+          <PHSelect
+            name="faculty"
+            label="Faculty"
+            options={courseFacultiesDataOptions}
+            disabled={!courseId}
+          />
           <PHInput type="number" label="Section" name="section" />
           <PHInput type="number" label="Max Capacity" name="maxCapacity" />
           <PHSelect
@@ -93,6 +132,8 @@ export const OfferCourse = () => {
             label="Days"
             options={daysOption}
           />
+          <PHTimePicker name="startTime" label="Start Time" />
+          <PHTimePicker name="endTime" label="End Time" />
 
           <Button htmlType="submit">Submit</Button>
         </PHForm>

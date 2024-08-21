@@ -22,3 +22,7 @@ export type TAcademicDepartment = {
   createdAt: string;
   updatedAt: string;
 };
+export type TAcademicFaculties = {
+  _id: string;
+  name: string;
+};

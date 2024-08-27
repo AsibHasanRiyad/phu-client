@@ -47,7 +47,7 @@ const PHSelect = ({
               }
             }}
             onBlur={field.onBlur}
-            value={field.value}
+            value={field.value || undefined}
           />
         </Form.Item>
       )}

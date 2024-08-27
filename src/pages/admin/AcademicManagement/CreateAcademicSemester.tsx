@@ -35,7 +35,7 @@ const CreateAcademicSemester = () => {
       if (res.error) {
         toast.error(res?.error?.data.message, { id: toastId });
       } else {
-        toast.success(res.data.message, { id: toastId });
+        toast.success(res.message, { id: toastId });
       }
     } catch (error) {
       toast.dismiss(toastId);

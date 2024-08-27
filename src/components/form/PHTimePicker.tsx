@@ -1,5 +1,6 @@
 import { Form, TimePicker } from "antd";
 import { Controller } from "react-hook-form";
+import moment from "moment";
 
 type TDatePickerProps = {
   name: string;
@@ -11,13 +12,14 @@ const PHTimePicker = ({ name, label }: TDatePickerProps) => {
     <div style={{ marginBottom: "20px" }}>
       <Controller
         name={name}
-        render={({ field }) => (
+        render={({ field: { onChange, value } }) => (
           <Form.Item label={label}>
             <TimePicker
               size="middle"
               style={{ width: "100%" }}
-              {...field}
-              format={"HH:mm"}
+              format="HH:mm"
+              value={value ? moment(value, "HH:mm") : null} // Handle empty state correctly
+              onChange={(time) => onChange(time ? time.format("HH:mm") : "")} // Correctly update the state with a formatted string
             />
           </Form.Item>
         )}

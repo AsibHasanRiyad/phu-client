@@ -77,23 +77,12 @@ const courseManagementApi = baseApi.injectEndpoints({
       }),
     }),
     getCourseFaculties: builder.query({
-      query: (args) => {
-        const params = new URLSearchParams();
-        const { courseId, ...otherParams } = args;
-        // console.log(args);
-        if (args) {
-          Object.keys(otherParams).forEach((key) => {
-            params.append(key, otherParams[key]);
-          });
-        }
-
+      query: (id) => {
         return {
-          url: `/courses/${courseId}/get-faculties`,
+          url: `/courses/${id}/get-faculties`,
           method: "GET",
-          params: params,
         };
       },
-      providesTags: ["semester"],
       transformResponse: (response: TResponseRedux<any>) => {
         return {
           data: response.data,

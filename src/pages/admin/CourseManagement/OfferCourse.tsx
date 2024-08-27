@@ -29,10 +29,7 @@ export const OfferCourse = () => {
     useGetAllSemesterRegistrationQuery(undefined);
   const { data: courseData } = useGetAllCoursesQuery(undefined);
   const { data: courseFacultiesData, isFetching: facultyFetching } =
-    useGetCourseFacultiesQuery({
-      courseId,
-      skip: !courseId,
-    });
+    useGetCourseFacultiesQuery(courseId, { skip: !courseId });
   const [addOfferedCourse] = useAddOfferedCourseMutation();
 
   const academicFacultiesOption = academicFacultyData?.data?.map((item) => ({
@@ -69,8 +66,9 @@ export const OfferCourse = () => {
     label: item,
   }));
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const formattedStartTime = moment(data.startTime).format("HH:mm");
-    const formattedEndTime = moment(data.endTime).format("HH:mm");
+    const formattedStartTime = moment(data.startTime, "HH:mm").format("HH:mm");
+    const formattedEndTime = moment(data.endTime, "HH:mm").format("HH:mm");
+    console.log(formattedStartTime, formattedEndTime);
     const offerCourseData = {
       ...data,
       section: Number(data.section),
@@ -87,7 +85,7 @@ export const OfferCourse = () => {
       if (res.error) {
         toast.error(res?.error?.data.message, { id: toastId });
       } else {
-        toast.success(res?.data?.message, { id: toastId });
+        toast.success(res?.message, { id: toastId });
       }
     } catch (error) {
       toast.dismiss(toastId);

@@ -80,7 +80,7 @@ const courseManagementApi = baseApi.injectEndpoints({
       query: (args) => {
         const params = new URLSearchParams();
         const { courseId, ...otherParams } = args;
-        console.log(args);
+        // console.log(args);
         if (args) {
           Object.keys(otherParams).forEach((key) => {
             params.append(key, otherParams[key]);

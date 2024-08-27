@@ -1,4 +1,4 @@
-import { Button, Col, Flex } from "antd";
+import { Button, Col, Flex, Row } from "antd";
 import PHForm from "../../../components/form/PHForm";
 
 import {
@@ -28,10 +28,11 @@ export const OfferCourse = () => {
   const { data: semesterRegistrationData } =
     useGetAllSemesterRegistrationQuery(undefined);
   const { data: courseData } = useGetAllCoursesQuery(undefined);
-  const { data: courseFacultiesData } = useGetCourseFacultiesQuery({
-    courseId,
-    skip: !courseId,
-  });
+  const { data: courseFacultiesData, isFetching: facultyFetching } =
+    useGetCourseFacultiesQuery({
+      courseId,
+      skip: !courseId,
+    });
   const [addOfferedCourse] = useAddOfferedCourseMutation();
 
   const academicFacultiesOption = academicFacultyData?.data?.map((item) => ({
@@ -95,46 +96,67 @@ export const OfferCourse = () => {
   };
   return (
     <Flex justify="center">
-      <Col span={6}>
+      <Col span={12}>
         <PHForm onSubmit={onSubmit}>
-          <PHSelect
-            options={academicFacultiesOption}
-            name={"academicFaculty"}
-            label={"Academic Faculty"}
-          />
-          <PHSelect
-            name="academicDepartment"
-            label="Academic Department"
-            options={academicDepartmentOptions}
-          />
-          <PHSelect
-            name="semesterRegistration"
-            label="Semester Registration"
-            options={semesterRegistrationOptions}
-          />
-          <PHSelectWithWatch
-            name="course"
-            label="Course"
-            options={courseOptions}
-            onValueChange={setCourseId}
-          />
-          <PHSelect
-            name="faculty"
-            label="Faculty"
-            options={courseFacultiesDataOptions}
-            disabled={!courseId}
-          />
-          <PHInput type="number" label="Section" name="section" />
-          <PHInput type="number" label="Max Capacity" name="maxCapacity" />
-          <PHSelect
-            mode="multiple"
-            name="days"
-            label="Days"
-            options={daysOption}
-          />
-          <PHTimePicker name="startTime" label="Start Time" />
-          <PHTimePicker name="endTime" label="End Time" />
-
+          <Row gutter={16}>
+            <Col span={12}>
+              <PHSelect
+                options={academicFacultiesOption}
+                name={"academicFaculty"}
+                label={"Academic Faculty"}
+              />
+            </Col>
+            <Col span={12}>
+              <PHSelect
+                name="academicDepartment"
+                label="Academic Department"
+                options={academicDepartmentOptions}
+              />
+            </Col>
+            <Col span={12}>
+              <PHSelect
+                name="semesterRegistration"
+                label="Semester Registration"
+                options={semesterRegistrationOptions}
+              />
+            </Col>
+            <Col span={12}>
+              <PHSelectWithWatch
+                name="course"
+                label="Course"
+                options={courseOptions}
+                onValueChange={setCourseId}
+              />
+            </Col>
+            <Col span={12}>
+              <PHSelect
+                name="faculty"
+                label="Faculty"
+                options={courseFacultiesDataOptions}
+                disabled={!courseId || facultyFetching}
+              />
+            </Col>
+            <Col span={12}>
+              <PHInput type="number" label="Section" name="section" />
+            </Col>
+            <Col span={12}>
+              <PHInput type="number" label="Max Capacity" name="maxCapacity" />
+            </Col>
+            <Col span={12}>
+              <PHSelect
+                mode="multiple"
+                name="days"
+                label="Days"
+                options={daysOption}
+              />
+            </Col>
+            <Col span={12}>
+              <PHTimePicker name="startTime" label="Start Time" />
+            </Col>
+            <Col span={12}>
+              <PHTimePicker name="endTime" label="End Time" />{" "}
+            </Col>
+          </Row>
           <Button htmlType="submit">Submit</Button>
         </PHForm>
       </Col>

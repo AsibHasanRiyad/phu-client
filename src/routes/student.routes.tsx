@@ -1,4 +1,4 @@
-import CreateAdmin from "../pages/admin/userManagement/CreateAdmin";
+import OfferedCourse from "../pages/student/OfferedCourse";
 import StudentDashboard from "../pages/student/StudentDashboard";
 
 export const studentPaths = [
@@ -8,12 +8,12 @@ export const studentPaths = [
     element: <StudentDashboard />,
   },
   {
-    name: "Student Management",
+    name: "Offered Course",
     children: [
       {
-        name: "Student Profile",
-        path: "create-admin",
-        element: <CreateAdmin />,
+        name: "Offered Course",
+        path: "offered-course",
+        element: <OfferedCourse />,
       },
     ],
   },

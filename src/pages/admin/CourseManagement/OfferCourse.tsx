@@ -76,12 +76,12 @@ export const OfferCourse = () => {
       startTime: formattedStartTime,
       endTime: formattedEndTime,
     };
-    console.log(offerCourseData);
+    // console.log(offerCourseData);
     const toastId = toast.loading("Creating.....");
 
     try {
       const res = await addOfferedCourse(offerCourseData).unwrap();
-      console.log(res);
+      // console.log(res);
       if (res.error) {
         toast.error(res?.error?.data.message, { id: toastId });
       } else {

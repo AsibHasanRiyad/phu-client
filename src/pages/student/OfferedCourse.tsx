@@ -1,9 +1,14 @@
 import { Button, Col, Row } from "antd";
-import { useGetAllOfferedCoursesQuery } from "../../redux/features/student/studentCourseManagement.api";
+import {
+  useEnrollCourseMutation,
+  useGetAllOfferedCoursesQuery,
+} from "../../redux/features/student/studentCourseManagement.api";
 
+type TCourse = { [index: string]: any };
 const OfferedCourse = () => {
   const { data: offeredCourseData } = useGetAllOfferedCoursesQuery(undefined);
-  const singleObject = offeredCourseData?.data?.reduce((acc, item) => {
+  const [enroll] = useEnrollCourseMutation();
+  const singleObject = offeredCourseData?.data?.reduce((acc: TCourse, item) => {
     const key = item?.course?.title;
     acc[key] = acc[key] || { courseTitle: key, sections: [] };
     acc[key].sections.push({
@@ -16,9 +21,25 @@ const OfferedCourse = () => {
     return acc;
   }, {});
 
-  console.log(singleObject);
+  // console.log(singleObject);
   const modifiedData = Object.values(singleObject ? singleObject : {});
 
+  const handelEnroll = async (id: string) => {
+    const enrollData = {
+      offeredCourse: id,
+    };
+    const res = await enroll(enrollData);
+    console.log(res);
+  };
+  if (!modifiedData.length) {
+    return (
+      <Row justify={"center"} align={"middle"} style={{ height: "100vh" }}>
+        <Col>
+          <h1>No Available Courses</h1>
+        </Col>
+      </Row>
+    );
+  }
   return (
     <Row>
       {modifiedData?.map((item, index) => {
@@ -62,7 +83,9 @@ const OfferedCourse = () => {
                     </Col>
                     <Col span={5}>Start Time: {section?.startTime}</Col>
                     <Col span={5}>End Time: {section?.endTime}</Col>
-                    <Button span={5}>Enroll</Button>
+                    <Button onClick={() => handelEnroll(section._id)} span={5}>
+                      Enroll
+                    </Button>
                   </Row>
                 );
               })}

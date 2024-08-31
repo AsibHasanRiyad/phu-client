@@ -21,7 +21,31 @@ const studentCourseApi = baseApi.injectEndpoints({
           params: params,
         };
       },
-      providesTags: ["semester"],
+      providesTags: ["offeredCourse"],
+      transformResponse: (response: TResponseRedux<TOfferedCourse[]>) => {
+        return {
+          data: response.data,
+          meta: response.meta,
+        };
+      },
+    }),
+    getAllEnrolledCourses: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParams) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/enrolled-courses/my-enrolled-courses",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["offeredCourse"],
       transformResponse: (response: TResponseRedux<TOfferedCourse[]>) => {
         return {
           data: response.data,
@@ -30,13 +54,18 @@ const studentCourseApi = baseApi.injectEndpoints({
       },
     }),
 
-    addFaculties: builder.mutation({
-      query: (args) => ({
-        url: `/courses/${args.courseId}/assign-faculties`,
-        method: "PUT",
-        body: args.data,
+    enrollCourse: builder.mutation({
+      query: (data) => ({
+        url: "enrolled-courses/create-enrolled-course",
+        method: "POST",
+        body: data,
       }),
+      invalidatesTags: ["offeredCourse"],
     }),
   }),
 });
-export const { useGetAllOfferedCoursesQuery } = studentCourseApi;
+export const {
+  useGetAllOfferedCoursesQuery,
+  useEnrollCourseMutation,
+  useGetAllEnrolledCoursesQuery,
+} = studentCourseApi;

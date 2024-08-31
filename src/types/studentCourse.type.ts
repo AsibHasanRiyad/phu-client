@@ -19,7 +19,18 @@ export type TOfferedCourse = {
   completedCourseIds: any[];
   isPreRequisitesFulFilled: boolean;
   isAlreadyEnrolled: boolean;
+  offeredCourse: TOfferedCourses;
 };
+export type TOfferedCourses =
+  | {
+      key: string;
+      title: string;
+      section: number;
+      startTime: string;
+      endTime: string;
+      days: string[];
+    }
+  | undefined;
 
 export interface Course {
   _id: string;
